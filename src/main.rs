@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::convert::TryInto;
 
 use netstat2::*;
 use sysinfo;
@@ -130,7 +131,7 @@ fn get_sockets(sys: &System, addr: AddressFamilyFlags) -> Vec<SocketInfo> {
         let process_ids = si.associated_pids;
         let mut processes: Vec<ProcessInfo> = Vec::new();
         for pid in process_ids {
-            let name = match sys.get_process(pid as usize) {
+            let name = match sys.get_process((pid as usize).try_into().unwrap()) {
                 Some(pinfo) => pinfo.name(),
                 None => "",
             };
